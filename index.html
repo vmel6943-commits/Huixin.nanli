@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>惠新南里社区AI助手</title>
+  <title>惠新南里社区AI助手 - DeepSeek版</title>
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     :root{
@@ -251,12 +251,13 @@
           <div class="login-sub" style="margin-top:8px">请选择您的身份进入专属界面</div>
         </div>
         
-        <div style="width:100%; margin-top:10px; padding-bottom: 10px; border-bottom: 0.5px solid var(--bd2);">
-          <input type="password" id="api-key-input" placeholder="在此填入您的 Anthropic API Key" style="text-align:center; background: #fff; margin-bottom: 6px;"/>
-          <div style="font-size:11px;color:var(--t2);text-align:center;">本地保存，不会上传到其他服务器</div>
+        <div style="width:100%; margin-top:10px; padding-bottom: 15px; border-bottom: 1px solid var(--bd2);">
+          <div style="font-size:12px; font-weight:bold; color:var(--gr); margin-bottom: 6px;">👇 请在此填入 API Key 👇</div>
+          <input type="password" id="api-key-input" placeholder="输入 DeepSeek Key (sk-...)" style="text-align:center; background: #fff; margin-bottom: 6px; padding: 12px; border: 1.5px solid var(--gr); font-weight: bold;"/>
+          <div style="font-size:11px;color:var(--t2);text-align:center;">刷新网页自动保存本地，不用重复填</div>
         </div>
 
-        <div class="role-cards">
+        <div class="role-cards" style="margin-top:10px;">
           <div class="rcard" onclick="enterWorker()">
             <div class="rci" style="background:var(--gr-l)">👔</div>
             <div><div class="rct">工作人员登录</div><div class="rcs">社工、网格员、书记专用入口</div></div>
@@ -595,13 +596,11 @@
 
     let role='';
 
-    // --- 新增：API Key 持久化逻辑 ---
+    // --- 新增：DeepSeek API Key 持久化逻辑 ---
     const apiKeyInput = $('api-key-input');
-    // 初始化时，如果本地有缓存，就自动填入
-    apiKeyInput.value = localStorage.getItem('claude_api_key') || '';
-    // 监听输入框变化，实时保存到本地缓存
+    apiKeyInput.value = localStorage.getItem('deepseek_api_key') || '';
     apiKeyInput.addEventListener('input', (e) => {
-      localStorage.setItem('claude_api_key', e.target.value.trim());
+      localStorage.setItem('deepseek_api_key', e.target.value.trim());
     });
     // -----------------------------
 
@@ -669,38 +668,38 @@
 
     function loading(el){el.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';el.className='';}
 
-    // --- 更新：调用最新模型并读取本地缓存的 API Key ---
-    async function callClaude(sys,user){
-      const apiKey = localStorage.getItem('claude_api_key');
+    // --- 更新：完全换成了 DeepSeek 的接口和格式 ---
+    async function callDeepSeek(sys, user){
+      const apiKey = localStorage.getItem('deepseek_api_key');
       if (!apiKey) {
-        alert("请先在首页填写 API Key！\n\n返回【我的】->【退出登录】即可回到首页填写。");
+        alert("请先在首页填写 DeepSeek API Key！\n\n返回【我的】->【退出登录】即可回到首页填写。");
         throw new Error("Missing API Key");
       }
 
-      const res = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://api.deepseek.com/chat/completions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'x-api-key': apiKey,
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerously-allow-browser': 'true' // 允许前端直接调用
+          'Authorization': `Bearer ${apiKey}` // DeepSeek 使用 Bearer Token 验证
         },
         body: JSON.stringify({
-          model: 'claude-3-5-sonnet-20241022', // 使用较新的模型版本
-          max_tokens: 800,
-          system: sys,
-          messages: [{ role: 'user', content: user }]
+          model: 'deepseek-chat', // DeepSeek 官方通用对话模型
+          messages: [
+            { role: 'system', content: sys },
+            { role: 'user', content: user }
+          ],
+          stream: false
         })
       });
       
       if (!res.ok) {
         const err = await res.text();
         console.error("API Error:", err);
-        throw new Error("API 请求失败，请检查 Key 是否正确或网络是否连通");
+        throw new Error("API 请求失败，请检查 Key 是否正确、是否欠费，或网络连通情况");
       }
       
       const d = await res.json();
-      return d.content?.map(b => b.text || '').join('') || '无响应';
+      return d.choices?.[0]?.message?.content || '无响应';
     }
 
     window.runAI=async function(type){
@@ -732,7 +731,7 @@
       }
       loading(el);
       try{
-        const txt=await callClaude(sys,user);
+        const txt=await callDeepSeek(sys,user); // 改为调用 DeepSeek 函数
         el.className='ai-box';el.textContent=txt;
       }catch(e){
         el.className='ai-box err';
@@ -753,7 +752,7 @@
       aMsg.className='fab-msg ai';aMsg.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
       msgs.appendChild(aMsg);msgs.scrollTop=msgs.scrollHeight;
       try{
-        const txt=await callClaude('你是惠新南里社区AI悬浮球助手，为社区工作人员提供随时帮助：写作、分析、政策查询、解答问题。简洁专业，用中文。',q);
+        const txt=await callDeepSeek('你是惠新南里社区AI悬浮球助手，为社区工作人员提供随时帮助：写作、分析、政策查询、解答问题。简洁专业，用中文。',q); // 改为调用 DeepSeek 函数
         aMsg.innerHTML='';aMsg.textContent=txt;
       }catch(e){
         aMsg.innerHTML='';
