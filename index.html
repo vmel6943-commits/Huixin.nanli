@@ -3,7 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>惠新南里社区AI助手 - DeepSeek版</title>
+  <title>惠新南里社区AI助手 - DeepSeek全屏版</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  
   <style>
     *{box-sizing:border-box;margin:0;padding:0;}
     :root{
@@ -130,14 +132,27 @@
     .chip{padding:5px 11px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid var(--bd);background:var(--s2);color:var(--t2);transition:all .12s;}
     .chip.on{background:var(--gr-l);border-color:var(--gr);color:var(--gr-d);}
 
-    /* AI response */
-    .ai-box{background:var(--gr-l);border-radius:11px;padding:11px 13px;font-size:13px;color:var(--gr-d);line-height:1.65;white-space:pre-wrap;}
+    /* AI response & Markdown Styles */
+    .ai-box{background:var(--gr-l);border-radius:11px;padding:13px 15px;font-size:14px;color:var(--gr-d);line-height:1.6; display:none;}
+    .ai-box.show{display:block;}
     .ai-box.err{background:var(--rd-l);color:var(--rd);}
+    
+    /* Markdown 元素美化 */
+    .md-content p { margin-bottom: 8px; }
+    .md-content p:last-child { margin-bottom: 0; }
+    .md-content ul, .md-content ol { padding-left: 20px; margin-bottom: 8px; }
+    .md-content li { margin-bottom: 4px; }
+    .md-content strong { font-weight: bold; }
+    .md-content h1, .md-content h2, .md-content h3 { font-size: 1.1em; font-weight: bold; margin: 10px 0 6px 0; }
+    .md-content pre { background: rgba(0,0,0,0.05); padding: 8px; border-radius: 6px; overflow-x: auto; margin: 8px 0; }
+    .md-content code { font-family: monospace; font-size: 0.9em; background: rgba(0,0,0,0.05); padding: 2px 4px; border-radius: 4px; color: #d63384; }
+    .md-content pre code { color: inherit; background: transparent; padding: 0; }
+
     .dots{display:inline-flex;gap:4px;padding:4px 0;}
-    .dots span{width:6px;height:6px;border-radius:50%;background:var(--gr);animation:dot 1.2s infinite;}
+    .dots span{width:6px;height:6px;border-radius:50%;background:currentColor;animation:dot 1.2s infinite;}
     .dots span:nth-child(2){animation-delay:.2s;}
     .dots span:nth-child(3){animation-delay:.4s;}
-    @keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+    @keyframes dot{0%,80%,100%{opacity:.3}40%{opacity:1}}
 
     /* list items */
     .nlist{display:flex;flex-direction:column;gap:7px;}
@@ -149,38 +164,28 @@
     .ntag.r{background:var(--rd-l);color:var(--rd);}
     .newdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#E24B4A;margin-left:4px;vertical-align:middle;}
 
-    /* reminder */
+    /* reminder & archives & bars ... (保持不变) */
     .rem{border-radius:0 10px 10px 0;padding:10px 13px;font-size:13px;margin-bottom:7px;line-height:1.5;}
     .rem.g{border-left:3px solid var(--gr);background:var(--gr-l);color:var(--gr-d);}
     .rem.a{border-left:3px solid var(--am);background:var(--am-l);color:var(--am-d);}
     .rem.r{border-left:3px solid #E24B4A;background:var(--rd-l);color:var(--rd);}
-
-    /* archive */
     .arc{background:var(--s2);border-radius:11px;padding:11px 13px;margin-bottom:8px;}
     .arc-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
     .arc-t{font-size:14px;font-weight:500;color:var(--t);}
     .arc-m{font-size:12px;color:var(--t2);}
-
-    /* data bars */
     .bar-wrap{margin-bottom:16px;}
     .bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:13px;}
     .bar-lbl{width:60px;color:var(--t2);flex-shrink:0;font-size:12px;}
     .bar-track{flex:1;height:7px;background:var(--s2);border-radius:4px;overflow:hidden;}
     .bar-fill{height:100%;border-radius:4px;}
     .bar-val{width:24px;text-align:right;color:var(--t2);font-size:12px;}
-
-    /* data grid */
     .d2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
     .dbox{background:var(--s2);border-radius:12px;padding:13px;}
     .dnum{font-size:24px;font-weight:500;}
     .dlbl{font-size:12px;color:var(--t2);margin-top:4px;}
-
-    /* page header */
     .ph{padding:14px 16px 2px;}
     .ph-t{font-size:17px;font-weight:500;color:var(--t);}
     .ph-s{font-size:12px;color:var(--t2);margin-top:3px;padding-bottom:10px;}
-
-    /* profile */
     .phead{display:flex;align-items:center;gap:14px;padding:18px 16px 12px;}
     .avt{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
     .pname{font-size:17px;font-weight:500;color:var(--t);}
@@ -191,8 +196,6 @@
     .mi-ic{font-size:18px;width:26px;text-align:center;}
     .mi-t{font-size:14px;color:var(--t);flex:1;}
     .mi-a{color:var(--t2);font-size:14px;}
-
-    /* news items */
     .news-item{background:var(--s2);border-radius:12px;padding:12px 14px;margin-bottom:9px;}
     .news-top{display:flex;gap:8px;align-items:center;margin-bottom:5px;}
     .news-title{font-size:14px;font-weight:500;color:var(--t);}
@@ -207,28 +210,54 @@
     .nb.on .nlb{color:var(--gr);}
     .nb.onb .nlb{color:var(--bl);}
 
-    /* ===== FLOATING AI BALL ===== */
-    .fab-area{position:absolute;bottom:calc(66px + env(safe-area-inset-bottom));right:14px;z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
-    .fab-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform .15s,box-shadow .15s;flex-shrink:0; -webkit-tap-highlight-color: transparent;}
+    /* ===== 全新设计的全屏 AI 悬浮球页面 ===== */
+    .fab-btn{position:absolute;bottom:calc(66px + env(safe-area-inset-bottom));right:14px;z-index:50;width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:none;align-items:center;justify-content:center;font-size:26px;transition:transform .15s,box-shadow .15s; -webkit-tap-highlight-color: transparent; box-shadow: 0 4px 12px rgba(29,158,117,0.3);}
+    .fab-btn.show{display:flex;}
     .fab-btn.g{background:var(--gr);}
     .fab-btn.b{background:var(--bl);}
     .fab-btn:active{transform:scale(.9);}
     .fab-btn.pulse{animation:pulse 2s infinite;}
-    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,158,117,.35)}50%{box-shadow:0 0 0 8px rgba(29,158,117,0)}}
-    .fab-panel{background:var(--s);border:0.5px solid var(--bd2);border-radius:16px;padding:14px;width:calc(100vw - 28px);max-width:320px;display:none;flex-direction:column;gap:9px;box-shadow:0 4px 20px rgba(0,0,0,.15);}
-    .fab-panel.open{display:flex;}
-    .fab-panel-head{display:flex;align-items:center;justify-content:space-between;}
-    .fab-title{font-size:13px;font-weight:500;color:var(--t);}
-    .fab-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--t2);padding:0;line-height:1;}
-    .fab-messages{max-height:200px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+    @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,158,117,.4)}50%{box-shadow:0 0 0 10px rgba(29,158,117,0)}}
+
+    /* 全屏弹出层 */
+    .fab-panel{
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--s2);
+      z-index: 100; /* 覆盖在所有元素上方 */
+      display: none; flex-direction: column;
+      transform: translateY(100%); /* 默认藏在下方 */
+      transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+    .fab-panel.open{ display: flex; transform: translateY(0); }
+
+    /* 顶部导航条 */
+    .fab-panel-head{
+      padding: max(12px, env(safe-area-inset-top)) 16px 12px;
+      background: var(--s); border-bottom: 0.5px solid var(--bd2);
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .fab-title{font-size: 16px; font-weight: 500; color: var(--t); display: flex; align-items: center; gap: 6px;}
+    .fab-close{background:none;border:none;font-size:22px;cursor:pointer;color:var(--t2);padding:0 8px;line-height:1;}
+
+    /* 聊天消息区 */
+    .fab-messages{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:12px;padding:16px; -webkit-overflow-scrolling: touch;}
     .fab-messages::-webkit-scrollbar{width:0;}
-    .fab-msg{padding:8px 11px;border-radius:10px;font-size:13px;line-height:1.55;}
-    .fab-msg.user{background:var(--gr);color:#fff;align-self:flex-end;max-width:90%;}
-    .fab-msg.ai{background:var(--s2);color:var(--t);align-self:flex-start;max-width:90%;}
-    .fab-input-row{display:flex;gap:7px;align-items:center;}
-    .fab-input-row input{flex:1;padding:10px;border:0.5px solid var(--bd2);border-radius:9px;font-size:13px;font-family:var(--font-sans);background:var(--s2);color:var(--t);}
-    .fab-input-row input:focus{outline:none;border-color:var(--gr);}
-    .fab-send{width:38px;height:38px;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+    .fab-msg-row{display:flex; flex-direction: column;}
+    .fab-msg{padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.6;}
+    .fab-msg.user{background:var(--gr);color:#fff;align-self:flex-end;border-bottom-right-radius:4px;max-width:85%;}
+    .fab-msg.ai{background:var(--s);color:var(--t);align-self:flex-start;border-bottom-left-radius:4px;max-width:90%;box-shadow: 0 1px 3px rgba(0,0,0,0.05);}
+    
+    /* 底部输入区 */
+    .fab-input-area{
+      padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+      background: var(--s); border-top: 0.5px solid var(--bd2);
+      display: flex; gap: 8px; align-items: center; flex-shrink: 0;
+    }
+    .fab-input-area input{flex:1;padding:12px 14px;border:none;border-radius:20px;font-size:14px;font-family:var(--font-sans);background:var(--s2);color:var(--t);}
+    .fab-input-area input:focus{outline:none;background:#ececec;}
+    .fab-send{width:40px;height:40px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
     .fab-send.g{background:var(--gr);color:#fff;}
     .fab-send.b{background:var(--bl);color:#fff;}
   </style>
@@ -323,16 +352,16 @@
               <span class="chip" onclick="pickChip(this,'chips-ocr')">活动总结</span>
             </div>
             <textarea id="ocr-in" rows="3" placeholder="粘贴文件内容或描述要归档的信息..."></textarea>
-            <button class="btn btn-g" onclick="runAI('ocr')">AI 分析归档</button>
-            <div id="r-ocr"></div>
+            <button class="btn btn-g" onclick="runAI('ocr', 'r-ocr')">AI 分析归档</button>
+            <div id="r-ocr" class="ai-box md-content"></div>
           </div>
         </div>
         <div class="card" id="c-policy">
           <div class="crow" onclick="tog('c-policy')"><div class="ci g">🔍</div><div><div class="ct">政策法规查询</div><div class="cs">即时问答</div></div><span class="chev" id="cv-c-policy">›</span></div>
           <div class="cbody" id="cb-c-policy">
             <input type="text" id="policy-q" placeholder="如：80岁老人高龄津贴申请条件..."/>
-            <button class="btn btn-g" onclick="runAI('policy')">查询</button>
-            <div id="r-policy"></div>
+            <button class="btn btn-g" onclick="runAI('policy', 'r-policy')">查询</button>
+            <div id="r-policy" class="ai-box md-content"></div>
           </div>
         </div>
         <div style="height:8px"></div>
@@ -354,8 +383,8 @@
           <div class="cbody open" id="cb-c-doc">
             <select id="doc-type"><option>活动通知</option><option>工作总结</option><option>入户走访方案</option><option>志愿者招募公告</option></select>
             <input type="text" id="doc-topic" placeholder="主题（如：端午节包粽子活动）"/>
-            <button class="btn btn-g" onclick="runAI('doc')">AI 起草文件</button>
-            <div id="r-doc"></div>
+            <button class="btn btn-g" onclick="runAI('doc', 'r-doc')">AI 起草文件</button>
+            <div id="r-doc" class="ai-box md-content"></div>
           </div>
         </div>
         <div style="height:8px"></div>
@@ -410,8 +439,8 @@
         <div class="card" id="c-analysis">
           <div class="crow" onclick="tog('c-analysis')"><div class="ci a">🤖</div><div><div class="ct">工单深度分析</div><div class="cs">根因识别与处理建议</div></div><span class="chev" id="cv-c-analysis">›</span></div>
           <div class="cbody" id="cb-c-analysis">
-            <button class="btn btn-g" onclick="runAI('analysis')">AI 深度分析本月工单</button>
-            <div id="r-analysis"></div>
+            <button class="btn btn-g" onclick="runAI('analysis', 'r-analysis')">AI 深度分析本月工单</button>
+            <div id="r-analysis" class="ai-box md-content"></div>
           </div>
         </div>
         <div style="height:8px"></div>
@@ -486,8 +515,8 @@
           <div class="crow" onclick="tog('c-report')"><div class="ci r">📣</div><div><div class="ct">新建问题上报</div><div class="cs">AI自动归类转办</div></div><span class="chev open" id="cv-c-report">›</span></div>
           <div class="cbody open" id="cb-c-report">
             <textarea id="report-in" rows="3" placeholder="请描述您的问题（如：楼道灯坏了，3号楼2单元）..."></textarea>
-            <button class="btn btn-b" onclick="runAI('report')">AI 智能上报</button>
-            <div id="r-report"></div>
+            <button class="btn btn-b" onclick="runAI('report', 'r-report')">AI 智能上报</button>
+            <div id="r-report" class="ai-box md-content"></div>
           </div>
         </div>
         <div class="slbl">我的历史上报</div>
@@ -528,8 +557,8 @@
           <div class="crow" onclick="tog('c-welfare')"><div class="ci g">🎁</div><div><div class="ct">AI 政策咨询</div><div class="cs">输入问题，即时解答</div></div><span class="chev open" id="cv-c-welfare">›</span></div>
           <div class="cbody open" id="cb-c-welfare">
             <input type="text" id="welfare-q" placeholder="如：老年人免费体检怎么申请？"/>
-            <button class="btn btn-b" onclick="runAI('welfare')">AI 咨询</button>
-            <div id="r-welfare"></div>
+            <button class="btn btn-b" onclick="runAI('welfare', 'r-welfare')">AI 咨询</button>
+            <div id="r-welfare" class="ai-box md-content"></div>
           </div>
         </div>
         <div class="slbl">智能提醒</div>
@@ -571,21 +600,22 @@
       </div>
     </div>
 
-    <div class="fab-area" id="fab-area" style="display:none">
-      <div class="fab-panel" id="fab-panel">
-        <div class="fab-panel-head">
-          <span class="fab-title">🤖 AI 悬浮助手</span>
-          <button class="fab-close" onclick="closeFab()">×</button>
-        </div>
-        <div class="fab-messages" id="fab-msgs">
-          <div class="fab-msg ai">你好！我是惠新南里社区AI助手，有什么可以帮你？</div>
-        </div>
-        <div class="fab-input-row">
-          <input type="text" id="fab-q" placeholder="随时提问..." onkeydown="if(event.key==='Enter')sendFab()"/>
-          <button class="fab-send g" onclick="sendFab()">↑</button>
+    <button class="fab-btn pulse" id="fab-btn" onclick="openFab()">🤖</button>
+
+    <div class="fab-panel" id="fab-panel">
+      <div class="fab-panel-head">
+        <span class="fab-title">✨ 惠新南里 AI 助手</span>
+        <button class="fab-close" onclick="closeFab()">收起 ▾</button>
+      </div>
+      <div class="fab-messages" id="fab-msgs">
+        <div class="fab-msg-row">
+          <div class="fab-msg ai md-content">你好！我是社区专属大模型助手。<br>无论是帮您起草公文、分析工单，还是解答政策问题，我都在行！请问今天有什么我可以帮您的？</div>
         </div>
       </div>
-      <button class="fab-btn g pulse" id="fab-btn" onclick="toggleFab()">🤖</button>
+      <div class="fab-input-area">
+        <input type="text" id="fab-q" placeholder="在此输入您的问题..." onkeydown="if(event.key==='Enter')sendFab()"/>
+        <button class="fab-send g" onclick="sendFab()">↑</button>
+      </div>
     </div>
 
   </div></div><script>
@@ -596,13 +626,12 @@
 
     let role='';
 
-    // --- 新增：DeepSeek API Key 持久化逻辑 ---
+    // --- DeepSeek API Key 持久化逻辑 ---
     const apiKeyInput = $('api-key-input');
     apiKeyInput.value = localStorage.getItem('deepseek_api_key') || '';
     apiKeyInput.addEventListener('input', (e) => {
       localStorage.setItem('deepseek_api_key', e.target.value.trim());
     });
-    // -----------------------------
 
     function showPage(id){
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -613,8 +642,8 @@
       role='';
       $('sbar').className='sbar login';
       $('sbar-t').textContent='惠新南里社区';
-      $('fab-area').style.display='none';
-      $('fab-panel').classList.remove('open');
+      $('fab-btn').classList.remove('show');
+      closeFab();
       showPage('p-login');
     };
 
@@ -622,7 +651,9 @@
       role='worker';
       $('sbar').className='sbar g';
       $('sbar-t').textContent='惠新南里社区';
-      $('fab-area').style.display='flex';
+      $('fab-btn').classList.add('show');
+      $('fab-btn').classList.add('g');
+      $('fab-btn').classList.remove('b');
       showPage('pw-home');
     };
 
@@ -630,18 +661,14 @@
       role='resident';
       $('sbar').className='sbar b';
       $('sbar-t').textContent='惠新南里社区';
-      $('fab-area').style.display='none';
+      $('fab-btn').classList.add('show');
+      $('fab-btn').classList.add('b');
+      $('fab-btn').classList.remove('g');
       showPage('pr-home');
     };
 
-    window.wNav=function(btn,pid,label){
-      showPage(pid);
-      $('sbar-t').textContent='惠新南里社区';
-    };
-    window.rNav=function(btn,pid,label){
-      showPage(pid);
-      $('sbar-t').textContent='惠新南里社区';
-    };
+    window.wNav=function(btn,pid,label){ showPage(pid); $('sbar-t').textContent='惠新南里社区'; };
+    window.rNav=function(btn,pid,label){ showPage(pid); $('sbar-t').textContent='惠新南里社区'; };
     window.wGo=function(pid){showPage(pid);};
     window.rGo=function(pid){showPage(pid);};
 
@@ -656,19 +683,30 @@
       el.classList.add('on');
     };
 
-    window.toggleFab=function(){
-      const panel=$('fab-panel');
-      const isOpen=panel.classList.toggle('open');
-      $('fab-btn').classList.toggle('pulse',!isOpen);
+    // --- 全屏悬浮球逻辑 ---
+    window.openFab=function(){
+      $('fab-panel').classList.add('open');
+      $('fab-btn').style.display = 'none'; // 打开页面时隐藏悬浮球本身
     };
     window.closeFab=function(){
       $('fab-panel').classList.remove('open');
-      $('fab-btn').classList.add('pulse');
+      setTimeout(() => { $('fab-btn').style.display = 'flex'; }, 200); // 加上小小的延迟让动画更平滑
     };
 
-    function loading(el){el.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';el.className='';}
+    // 辅助：加载动画
+    function loading(el){
+      el.classList.add('show');
+      el.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+      el.classList.remove('err');
+    }
 
-    // --- 更新：完全换成了 DeepSeek 的接口和格式 ---
+    // 辅助：解析 Markdown (如果未加载成功，降级处理为普通换行)
+    function parseMD(text) {
+      if(window.marked) { return marked.parse(text); }
+      return text.replace(/\n/g, '<br>');
+    }
+
+    // --- DeepSeek 通信逻辑 ---
     async function callDeepSeek(sys, user){
       const apiKey = localStorage.getItem('deepseek_api_key');
       if (!apiKey) {
@@ -680,10 +718,10 @@
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}` // DeepSeek 使用 Bearer Token 验证
+          'Authorization': `Bearer ${apiKey}`
         },
         body: JSON.stringify({
-          model: 'deepseek-chat', // DeepSeek 官方通用对话模型
+          model: 'deepseek-chat',
           messages: [
             { role: 'system', content: sys },
             { role: 'user', content: user }
@@ -695,68 +733,83 @@
       if (!res.ok) {
         const err = await res.text();
         console.error("API Error:", err);
-        throw new Error("API 请求失败，请检查 Key 是否正确、是否欠费，或网络连通情况");
+        throw new Error("API 请求失败，请检查 Key 或网络");
       }
       
       const d = await res.json();
       return d.choices?.[0]?.message?.content || '无响应';
     }
 
-    window.runAI=async function(type){
-      let sys,user,el;
+    // 页面内部块级 AI 请求
+    window.runAI=async function(type, targetId){
+      let sys,user;
+      const el = $(targetId);
+      
       if(type==='ocr'){
         const cat=document.querySelector('#chips-ocr .chip.on')?.textContent||'通用';
         const txt=$('ocr-in').value.trim()||'（无内容）';
-        sys='你是惠新南里社区信息管理助手。分析内容，提取关键信息（时间/地点/人员/问题），给出归档建议。用中文，简洁。';
-        user=`分类：${cat}\n内容：${txt}`;el=$('r-ocr');
+        sys='你是惠新南里社区信息管理助手。分析内容，提取关键信息（时间/地点/人员/问题），给出归档建议。尽量使用 Markdown 格式（如加粗、列表）让内容更清晰。';
+        user=`分类：${cat}\n内容：${txt}`;
       }else if(type==='doc'){
         const t=$('doc-type').value,topic=$('doc-topic').value.trim()||'（请填写主题）';
-        sys='你是惠新南里社区公文写作助手。起草格式规范的社区公文，含标题、正文、落款，语气正式友好。';
-        user=`请起草一份${t}，主题：${topic}`;el=$('r-doc');
+        sys='你是惠新南里社区公文写作助手。起草格式规范的社区公文，含标题、正文、落款。使用 Markdown 格式。';
+        user=`请起草一份${t}，主题：${topic}`;
       }else if(type==='analysis'){
-        sys='你是社区工单分析师。分类统计、识别高频问题和根本原因，给出优先级处理建议。结构清晰。';
-        user='分析惠新南里本月工单：噪音纠纷38起、停车问题29起、设施损坏21起、环境卫生15起、其他9起';el=$('r-analysis');
+        sys='你是社区工单分析师。分类统计、识别高频问题和根本原因，给出建议。必须使用清晰的 Markdown 格式输出。';
+        user='分析惠新南里本月工单：噪音纠纷38起、停车问题29起、设施损坏21起、环境卫生15起、其他9起';
       }else if(type==='policy'){
         const q=$('policy-q').value.trim()||'高龄津贴';
-        sys='你是社区政策法规助手，熟悉中国社区服务、民政福利政策。通俗易懂，给出实际操作指引，提醒核实本地政策。';
-        user=q;el=$('r-policy');
+        sys='你是社区政策法规助手。用通俗易懂的中文和 Markdown 列表给出实际操作指引。';
+        user=q;
       }else if(type==='report'){
         const txt=$('report-in').value.trim()||'（无内容）';
-        sys='你是社区问题上报助手。对居民问题分类（设施/环境/噪音/安全等），提取位置和描述，给出分类、优先级和处理建议。';
-        user=`惠新南里居民反映：${txt}`;el=$('r-report');
+        sys='你是社区问题上报助手。对居民问题分类提取位置，给出处理建议。用 Markdown 加粗重点。';
+        user=`惠新南里居民反映：${txt}`;
       }else if(type==='welfare'){
         const q=$('welfare-q').value.trim()||'社区福利政策';
-        sys='你是惠新南里社区居民服务助手，提供政策咨询。用亲切友好的中文回答，语言简洁实用。';
-        user=q;el=$('r-welfare');
+        sys='你是社区福利咨询助手。用友好亲切的口吻回答，要点用 Markdown 列表呈现。';
+        user=q;
       }
+      
       loading(el);
       try{
-        const txt=await callDeepSeek(sys,user); // 改为调用 DeepSeek 函数
-        el.className='ai-box';el.textContent=txt;
+        const txt=await callDeepSeek(sys,user);
+        el.className='ai-box md-content show';
+        el.innerHTML = parseMD(txt); // <--- 解析 Markdown 渲染美化
       }catch(e){
-        el.className='ai-box err';
-        el.textContent= e.message || '请求失败，请检查网络或 API Key。';
+        el.className='ai-box md-content show err';
+        el.innerHTML = e.message || '请求失败，请重试。';
       }
     };
 
-    // FAB chat
+    // 全屏页面聊天请求
     window.sendFab=async function(){
       const input=$('fab-q');
       const q=input.value.trim();
       if(!q)return;
       input.value='';
+      
       const msgs=$('fab-msgs');
-      const uMsg=document.createElement('div');
-      uMsg.className='fab-msg user';uMsg.textContent=q;msgs.appendChild(uMsg);
-      const aMsg=document.createElement('div');
-      aMsg.className='fab-msg ai';aMsg.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
-      msgs.appendChild(aMsg);msgs.scrollTop=msgs.scrollHeight;
+      
+      // 用户消息
+      const uRow=document.createElement('div'); uRow.className='fab-msg-row';
+      const uMsg=document.createElement('div'); uMsg.className='fab-msg user'; 
+      uMsg.textContent=q;
+      uRow.appendChild(uMsg); msgs.appendChild(uRow);
+      
+      // AI 加载占位
+      const aRow=document.createElement('div'); aRow.className='fab-msg-row';
+      const aMsg=document.createElement('div'); aMsg.className='fab-msg ai md-content'; 
+      aMsg.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+      aRow.appendChild(aMsg); msgs.appendChild(aRow);
+      
+      msgs.scrollTop=msgs.scrollHeight;
+      
       try{
-        const txt=await callDeepSeek('你是惠新南里社区AI悬浮球助手，为社区工作人员提供随时帮助：写作、分析、政策查询、解答问题。简洁专业，用中文。',q); // 改为调用 DeepSeek 函数
-        aMsg.innerHTML='';aMsg.textContent=txt;
+        const txt=await callDeepSeek('你是惠新南里社区全能AI助手，可以自由回答用户的任何问题。输出结果请尽可能使用 Markdown 语法进行美化，比如加粗、列表等。', q);
+        aMsg.innerHTML=parseMD(txt); // <--- 解析 Markdown 渲染美化
       }catch(e){
-        aMsg.innerHTML='';
-        aMsg.textContent= e.message || '请求失败，请检查网络或 API Key。';
+        aMsg.innerHTML= e.message || '请求失败，请检查网络或 API Key。';
       }
       msgs.scrollTop=msgs.scrollHeight;
     };
