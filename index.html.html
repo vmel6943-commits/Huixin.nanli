@@ -1,0 +1,707 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --gr:#1D9E75;--gr-l:#E1F5EE;--gr-d:#085041;
+  --bl:#185FA5;--bl-l:#E6F1FB;--bl-d:#042C53;
+  --am:#BA7517;--am-l:#FAEEDA;--am-d:#412402;
+  --rd:#A32D2D;--rd-l:#FCEBEB;
+  --s:var(--color-background-primary);
+  --s2:var(--color-background-secondary);
+  --bd:var(--color-border-tertiary);
+  --bd2:var(--color-border-secondary);
+  --t:var(--color-text-primary);
+  --t2:var(--color-text-secondary);
+  --r:var(--border-radius-lg);
+}
+body{font-family:var(--font-sans);}
+.wrap{max-width:390px;margin:0 auto;padding:8px 8px 0;position:relative;}
+.frame{background:var(--s);border:0.5px solid var(--bd);border-radius:22px;overflow:hidden;display:flex;flex-direction:column;height:700px;position:relative;}
+
+/* status bar */
+.sbar{padding:11px 18px 9px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0;}
+.sbar.g{background:var(--gr);}
+.sbar.b{background:var(--bl);}
+.sbar.login{background:var(--s2);}
+.sbar .st{color:#fff;font-size:15px;font-weight:500;letter-spacing:.01em;}
+.sbar .sc{color:rgba(255,255,255,.75);font-size:12px;}
+.sbar.login .st{color:var(--t2);}
+.sbar.login .sc{color:var(--t2);}
+
+/* pages */
+.page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
+.page.active{display:flex;}
+.scroll{flex:1;overflow-y:auto;padding:16px 16px 8px;}
+.scroll::-webkit-scrollbar{width:0;}
+
+/* login */
+.login-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:22px;padding:28px 22px;background:var(--s2);}
+.logo-ring{width:76px;height:76px;border-radius:50%;background:var(--gr);display:flex;align-items:center;justify-content:center;font-size:34px;flex-shrink:0;}
+.login-h{font-size:18px;font-weight:500;color:var(--t);text-align:center;line-height:1.4;}
+.login-sub{font-size:13px;color:var(--t2);text-align:center;line-height:1.6;margin-top:-14px;}
+.role-cards{display:flex;flex-direction:column;gap:10px;width:100%;}
+.rcard{background:var(--s);border:0.5px solid var(--bd2);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;}
+.rcard:hover{border-color:var(--gr);background:var(--gr-l);}
+.rci{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
+.rct{font-size:15px;font-weight:500;color:var(--t);}
+.rcs{font-size:12px;color:var(--t2);margin-top:2px;}
+
+/* greeting card */
+.greet{border-radius:16px;padding:16px 18px;color:#fff;margin-bottom:16px;}
+.greet.g{background:var(--gr);}
+.greet.b{background:var(--bl);}
+.greet-row{display:flex;justify-content:space-between;align-items:flex-start;}
+.gname{font-size:16px;font-weight:500;}
+.gsub{font-size:12px;opacity:.8;margin-top:3px;}
+.gbadge{background:rgba(255,255,255,.18);border-radius:10px;padding:7px 12px;text-align:center;min-width:56px;}
+.gbig{font-size:22px;font-weight:500;}
+.glb{font-size:10px;opacity:.8;margin-top:1px;}
+
+/* stats */
+.stat3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:16px;}
+.sbox{background:var(--s2);border-radius:12px;padding:11px 8px;text-align:center;}
+.sn{font-size:20px;font-weight:500;}
+.sl{font-size:11px;color:var(--t2);margin-top:3px;}
+
+/* quick grid */
+.qg{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px;}
+.qi{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;}
+.qi-ic{width:50px;height:50px;border-radius:15px;display:flex;align-items:center;justify-content:center;font-size:23px;transition:transform .12s;}
+.qi:active .qi-ic{transform:scale(.92);}
+.qi-lb{font-size:11px;color:var(--t2);text-align:center;}
+
+/* section label */
+.slbl{font-size:11px;color:var(--t2);letter-spacing:.07em;text-transform:uppercase;margin-bottom:9px;padding-left:1px;}
+
+/* cards */
+.card{background:var(--s);border:0.5px solid var(--bd);border-radius:14px;margin-bottom:10px;overflow:hidden;}
+.crow{display:flex;align-items:center;gap:10px;padding:12px 14px;cursor:pointer;transition:background .12s;}
+.crow:hover{background:var(--s2);}
+.ci{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;}
+.ci.g{background:var(--gr-l);}
+.ci.b{background:var(--bl-l);}
+.ci.a{background:var(--am-l);}
+.ci.r{background:var(--rd-l);}
+.ct{font-size:14px;font-weight:500;color:var(--t);}
+.cs{font-size:12px;color:var(--t2);margin-top:2px;}
+.chev{margin-left:auto;color:var(--t2);font-size:15px;transition:transform .2s;}
+.chev.open{transform:rotate(90deg);}
+.cbody{padding:13px 14px;border-top:0.5px solid var(--bd);display:none;flex-direction:column;gap:9px;}
+.cbody.open{display:flex;}
+
+/* inputs */
+textarea,input[type=text]{width:100%;padding:9px 11px;border:0.5px solid var(--bd2);border-radius:9px;font-size:13px;font-family:var(--font-sans);background:var(--s2);color:var(--t);resize:none;line-height:1.5;}
+textarea:focus,input:focus{outline:none;border-color:var(--gr);}
+select{width:100%;padding:8px 11px;border:0.5px solid var(--bd2);border-radius:9px;font-size:13px;font-family:var(--font-sans);background:var(--s2);color:var(--t);}
+.btn{padding:9px 14px;border-radius:9px;font-size:13px;cursor:pointer;border:none;font-family:var(--font-sans);font-weight:500;transition:opacity .12s;}
+.btn:active{opacity:.8;}
+.btn-g{background:var(--gr);color:#fff;}
+.btn-b{background:var(--bl);color:#fff;}
+.chip-row{display:flex;gap:6px;flex-wrap:wrap;}
+.chip{padding:5px 11px;border-radius:20px;font-size:12px;cursor:pointer;border:0.5px solid var(--bd);background:var(--s2);color:var(--t2);transition:all .12s;}
+.chip.on{background:var(--gr-l);border-color:var(--gr);color:var(--gr-d);}
+
+/* AI response */
+.ai-box{background:var(--gr-l);border-radius:11px;padding:11px 13px;font-size:13px;color:var(--gr-d);line-height:1.65;white-space:pre-wrap;}
+.ai-box.err{background:var(--rd-l);color:var(--rd);}
+.dots{display:inline-flex;gap:4px;padding:4px 0;}
+.dots span{width:6px;height:6px;border-radius:50%;background:var(--gr);animation:dot 1.2s infinite;}
+.dots span:nth-child(2){animation-delay:.2s;}
+.dots span:nth-child(3){animation-delay:.4s;}
+@keyframes dot{0%,80%,100%{opacity:.2}40%{opacity:1}}
+
+/* list items */
+.nlist{display:flex;flex-direction:column;gap:7px;}
+.nitem{background:var(--s2);border-radius:10px;padding:10px 12px;font-size:13px;color:var(--t);display:flex;gap:8px;align-items:flex-start;line-height:1.5;}
+.ntag{padding:2px 8px;border-radius:6px;font-size:11px;flex-shrink:0;margin-top:1px;font-weight:500;}
+.ntag.g{background:var(--gr-l);color:var(--gr-d);}
+.ntag.b{background:var(--bl-l);color:var(--bl-d);}
+.ntag.a{background:var(--am-l);color:var(--am-d);}
+.ntag.r{background:var(--rd-l);color:var(--rd);}
+.newdot{display:inline-block;width:6px;height:6px;border-radius:50%;background:#E24B4A;margin-left:4px;vertical-align:middle;}
+
+/* reminder */
+.rem{border-radius:0 10px 10px 0;padding:10px 13px;font-size:13px;margin-bottom:7px;line-height:1.5;}
+.rem.g{border-left:3px solid var(--gr);background:var(--gr-l);color:var(--gr-d);}
+.rem.a{border-left:3px solid var(--am);background:var(--am-l);color:var(--am-d);}
+.rem.r{border-left:3px solid #E24B4A;background:var(--rd-l);color:var(--rd);}
+
+/* archive */
+.arc{background:var(--s2);border-radius:11px;padding:11px 13px;margin-bottom:8px;}
+.arc-row{display:flex;align-items:center;gap:8px;margin-bottom:5px;}
+.arc-t{font-size:14px;font-weight:500;color:var(--t);}
+.arc-m{font-size:12px;color:var(--t2);}
+
+/* data bars */
+.bar-wrap{margin-bottom:16px;}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px;font-size:13px;}
+.bar-lbl{width:60px;color:var(--t2);flex-shrink:0;font-size:12px;}
+.bar-track{flex:1;height:7px;background:var(--s2);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;}
+.bar-val{width:24px;text-align:right;color:var(--t2);font-size:12px;}
+
+/* data grid */
+.d2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:16px;}
+.dbox{background:var(--s2);border-radius:12px;padding:13px;}
+.dnum{font-size:24px;font-weight:500;}
+.dlbl{font-size:12px;color:var(--t2);margin-top:4px;}
+
+/* page header */
+.ph{padding:14px 16px 2px;}
+.ph-t{font-size:17px;font-weight:500;color:var(--t);}
+.ph-s{font-size:12px;color:var(--t2);margin-top:3px;padding-bottom:10px;}
+
+/* profile */
+.phead{display:flex;align-items:center;gap:14px;padding:18px 16px 12px;}
+.avt{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;}
+.pname{font-size:17px;font-weight:500;color:var(--t);}
+.prole{font-size:13px;color:var(--t2);margin-top:3px;}
+.mi{display:flex;align-items:center;gap:11px;padding:13px 16px;border-bottom:0.5px solid var(--bd);cursor:pointer;transition:background .12s;}
+.mi:hover{background:var(--s2);}
+.mi:last-child{border-bottom:none;}
+.mi-ic{font-size:18px;width:26px;text-align:center;}
+.mi-t{font-size:14px;color:var(--t);flex:1;}
+.mi-a{color:var(--t2);font-size:14px;}
+
+/* news items */
+.news-item{background:var(--s2);border-radius:12px;padding:12px 14px;margin-bottom:9px;}
+.news-top{display:flex;gap:8px;align-items:center;margin-bottom:5px;}
+.news-title{font-size:14px;font-weight:500;color:var(--t);}
+.news-desc{font-size:12px;color:var(--t2);line-height:1.55;}
+
+/* bottom nav */
+.nav{display:flex;border-top:0.5px solid var(--bd);background:var(--s);flex-shrink:0;}
+.nb{flex:1;padding:9px 2px 11px;text-align:center;border:none;background:none;font-family:var(--font-sans);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:opacity .12s;}
+.nb:active{opacity:.7;}
+.nic{font-size:21px;}
+.nlb{font-size:10px;color:var(--t2);}
+.nb.on .nlb{color:var(--gr);}
+.nb.onb .nlb{color:var(--bl);}
+
+/* ===== FLOATING AI BALL ===== */
+.fab-area{position:absolute;bottom:66px;right:14px;z-index:50;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+.fab-btn{width:52px;height:52px;border-radius:50%;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:26px;transition:transform .15s,box-shadow .15s;flex-shrink:0;}
+.fab-btn.g{background:var(--gr);}
+.fab-btn.b{background:var(--bl);}
+.fab-btn:active{transform:scale(.9);}
+.fab-btn.pulse{animation:pulse 2s infinite;}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,158,117,.35)}50%{box-shadow:0 0 0 8px rgba(29,158,117,0)}}
+.fab-panel{background:var(--s);border:0.5px solid var(--bd2);border-radius:16px;padding:14px;width:260px;display:none;flex-direction:column;gap:9px;box-shadow:0 4px 20px rgba(0,0,0,.08);}
+.fab-panel.open{display:flex;}
+.fab-panel-head{display:flex;align-items:center;justify-content:space-between;}
+.fab-title{font-size:13px;font-weight:500;color:var(--t);}
+.fab-close{background:none;border:none;font-size:18px;cursor:pointer;color:var(--t2);padding:0;line-height:1;}
+.fab-messages{max-height:160px;overflow-y:auto;display:flex;flex-direction:column;gap:7px;}
+.fab-messages::-webkit-scrollbar{width:0;}
+.fab-msg{padding:8px 11px;border-radius:10px;font-size:12px;line-height:1.55;}
+.fab-msg.user{background:var(--gr);color:#fff;align-self:flex-end;max-width:90%;}
+.fab-msg.ai{background:var(--s2);color:var(--t);align-self:flex-start;max-width:90%;}
+.fab-input-row{display:flex;gap:7px;align-items:center;}
+.fab-input-row input{flex:1;padding:8px 10px;border:0.5px solid var(--bd2);border-radius:9px;font-size:12px;font-family:var(--font-sans);background:var(--s2);color:var(--t);}
+.fab-input-row input:focus{outline:none;border-color:var(--gr);}
+.fab-send{width:34px;height:34px;border-radius:9px;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;}
+.fab-send.g{background:var(--gr);color:#fff;}
+.fab-send.b{background:var(--bl);color:#fff;}
+</style>
+
+<h2 class="sr-only">惠新南里社区AI助手 — 完整小程序演示含悬浮球</h2>
+
+<div class="wrap" id="mainwrap">
+<div class="frame" id="app">
+
+  <div class="sbar login" id="sbar">
+    <span class="st" id="sbar-t">惠新南里社区</span>
+    <span class="sc" id="sbar-c">9:41</span>
+  </div>
+
+  <!-- LOGIN -->
+  <div class="page active" id="p-login">
+    <div class="login-wrap">
+      <div class="logo-ring">🏘️</div>
+      <div style="text-align:center">
+        <div class="login-h">惠新南里社区<br>智慧服务平台</div>
+        <div class="login-sub" style="margin-top:8px">请选择您的身份进入专属界面</div>
+      </div>
+      <div class="role-cards">
+        <div class="rcard" onclick="enterWorker()">
+          <div class="rci" style="background:var(--gr-l)">👔</div>
+          <div><div class="rct">工作人员登录</div><div class="rcs">社工、网格员、书记专用入口</div></div>
+          <span style="margin-left:auto;color:var(--t2);font-size:20px">›</span>
+        </div>
+        <div class="rcard" onclick="enterResident()">
+          <div class="rci" style="background:var(--bl-l)">🏠</div>
+          <div><div class="rct">居民登录</div><div class="rcs">小区居民、志愿者专用入口</div></div>
+          <span style="margin-left:auto;color:var(--t2);font-size:20px">›</span>
+        </div>
+      </div>
+      <div style="font-size:11px;color:var(--t2)">微信授权登录 · 安全可信</div>
+    </div>
+  </div>
+
+  <!-- WORKER: HOME -->
+  <div class="page" id="pw-home">
+    <div class="scroll">
+      <div class="greet g">
+        <div class="greet-row">
+          <div><div class="gname">你好，张社工 👋</div><div class="gsub">惠新南里 · 东区网格 · 今日待办 3 项</div></div>
+          <div class="gbadge"><div class="gbig">142</div><div class="glb">本月工单</div></div>
+        </div>
+      </div>
+      <div class="stat3">
+        <div class="sbox"><div class="sn" style="color:var(--gr)">89%</div><div class="sl">入户完成</div></div>
+        <div class="sbox"><div class="sn" style="color:var(--am)">23</div><div class="sl">待处理</div></div>
+        <div class="sbox"><div class="sn">5</div><div class="sl">今日巡查</div></div>
+      </div>
+      <div class="slbl">常用功能</div>
+      <div class="qg">
+        <div class="qi" onclick="wGo('pw-filing','工单录入')"><div class="qi-ic" style="background:var(--gr-l)">📋</div><div class="qi-lb">信息录入</div></div>
+        <div class="qi" onclick="wGo('pw-doc','公文写作')"><div class="qi-ic" style="background:var(--bl-l)">✍️</div><div class="qi-lb">公文写作</div></div>
+        <div class="qi" onclick="wGo('pw-data','数据看板')"><div class="qi-ic" style="background:var(--am-l)">📊</div><div class="qi-lb">工单数据</div></div>
+        <div class="qi" onclick="wGo('pw-orders','档案库')"><div class="qi-ic" style="background:var(--gr-l)">📂</div><div class="qi-lb">档案库</div></div>
+      </div>
+      <div class="slbl">最新工单</div>
+      <div class="nlist">
+        <div class="nitem"><span class="ntag a">噪音</span>3栋202反映楼上深夜拖椅声</div>
+        <div class="nitem"><span class="ntag b">停车</span>地下车库B2占用消防通道</div>
+        <div class="nitem"><span class="ntag r">安全</span>5栋装修超时违反规定</div>
+        <div class="nitem"><span class="ntag g">设施</span>健身器材扶手损坏</div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb on" onclick="wNav(this,'pw-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="wNav(this,'pw-orders','档案库')"><span class="nic">📂</span><span class="nlb">档案库</span></button>
+      <button class="nb" onclick="wNav(this,'pw-filing','工单录入')"><span class="nic">📋</span><span class="nlb">工单</span></button>
+      <button class="nb" onclick="wNav(this,'pw-data','数据看板')"><span class="nic">📊</span><span class="nlb">数据</span></button>
+      <button class="nb" onclick="wNav(this,'pw-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- WORKER: FILING -->
+  <div class="page" id="pw-filing">
+    <div class="ph"><div class="ph-t">工单录入</div><div class="ph-s">AI智能分类，自动归档</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <div class="card" id="c-ocr">
+        <div class="crow" onclick="tog('c-ocr')"><div class="ci g">📋</div><div><div class="ct">智能录入 & 归档</div><div class="cs">AI提取关键信息</div></div><span class="chev open" id="cv-c-ocr">›</span></div>
+        <div class="cbody open" id="cb-c-ocr">
+          <div class="chip-row" id="chips-ocr">
+            <span class="chip on" onclick="pickChip(this,'chips-ocr')">接诉即办</span>
+            <span class="chip" onclick="pickChip(this,'chips-ocr')">住户走访</span>
+            <span class="chip" onclick="pickChip(this,'chips-ocr')">巡查记录</span>
+            <span class="chip" onclick="pickChip(this,'chips-ocr')">活动总结</span>
+          </div>
+          <textarea id="ocr-in" rows="3" placeholder="粘贴文件内容或描述要归档的信息..."></textarea>
+          <button class="btn btn-g" onclick="runAI('ocr')">AI 分析归档</button>
+          <div id="r-ocr"></div>
+        </div>
+      </div>
+      <div class="card" id="c-policy">
+        <div class="crow" onclick="tog('c-policy')"><div class="ci g">🔍</div><div><div class="ct">政策法规查询</div><div class="cs">即时问答</div></div><span class="chev" id="cv-c-policy">›</span></div>
+        <div class="cbody" id="cb-c-policy">
+          <input type="text" id="policy-q" placeholder="如：80岁老人高龄津贴申请条件..."/>
+          <button class="btn btn-g" onclick="runAI('policy')">查询</button>
+          <div id="r-policy"></div>
+        </div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="wNav(this,'pw-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="wNav(this,'pw-orders','档案库')"><span class="nic">📂</span><span class="nlb">档案库</span></button>
+      <button class="nb on" onclick="wNav(this,'pw-filing','工单录入')"><span class="nic">📋</span><span class="nlb">工单</span></button>
+      <button class="nb" onclick="wNav(this,'pw-data','数据看板')"><span class="nic">📊</span><span class="nlb">数据</span></button>
+      <button class="nb" onclick="wNav(this,'pw-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- WORKER: DOC -->
+  <div class="page" id="pw-doc">
+    <div class="ph"><div class="ph-t">公文写作辅助</div><div class="ph-s">通知、方案、总结一键生成</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <div class="card" id="c-doc">
+        <div class="crow" onclick="tog('c-doc')"><div class="ci b">✍️</div><div><div class="ct">AI 起草文件</div><div class="cs">选择类型并填写主题</div></div><span class="chev open" id="cv-c-doc">›</span></div>
+        <div class="cbody open" id="cb-c-doc">
+          <select id="doc-type"><option>活动通知</option><option>工作总结</option><option>入户走访方案</option><option>志愿者招募公告</option></select>
+          <input type="text" id="doc-topic" placeholder="主题（如：端午节包粽子活动）"/>
+          <button class="btn btn-g" onclick="runAI('doc')">AI 起草文件</button>
+          <div id="r-doc"></div>
+        </div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="wNav(this,'pw-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="wNav(this,'pw-orders','档案库')"><span class="nic">📂</span><span class="nlb">档案库</span></button>
+      <button class="nb on" onclick="wNav(this,'pw-filing','工单录入')"><span class="nic">📋</span><span class="nlb">工单</span></button>
+      <button class="nb" onclick="wNav(this,'pw-data','数据看板')"><span class="nic">📊</span><span class="nlb">数据</span></button>
+      <button class="nb" onclick="wNav(this,'pw-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- WORKER: ORDERS -->
+  <div class="page" id="pw-orders">
+    <div class="ph"><div class="ph-t">档案库</div><div class="ph-s">历史记录检索与管理</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <input type="text" placeholder="🔍  关键词 / 时间 / 分类搜索..." style="margin-bottom:14px"/>
+      <div class="slbl">最近归档</div>
+      <div class="arc"><div class="arc-row"><span class="ntag g">住户走访</span><span class="arc-t">东区3栋入户走访记录</span></div><div class="arc-m">2024-06-10 · 张社工 · 共12户</div></div>
+      <div class="arc"><div class="arc-row"><span class="ntag a">接诉即办</span><span class="arc-t">共享单车乱停放投诉处理</span></div><div class="arc-m">2024-06-08 · 李网格员 · 已办结</div></div>
+      <div class="arc"><div class="arc-row"><span class="ntag b">活动总结</span><span class="arc-t">端午节社区活动总结</span></div><div class="arc-m">2024-06-07 · 王社工 · 参与45人</div></div>
+      <div class="arc"><div class="arc-row"><span class="ntag r">巡查记录</span><span class="arc-t">消防通道巡查记录</span></div><div class="arc-m">2024-06-05 · 张社工 · 发现问题2处</div></div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="wNav(this,'pw-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb on" onclick="wNav(this,'pw-orders','档案库')"><span class="nic">📂</span><span class="nlb">档案库</span></button>
+      <button class="nb" onclick="wNav(this,'pw-filing','工单录入')"><span class="nic">📋</span><span class="nlb">工单</span></button>
+      <button class="nb" onclick="wNav(this,'pw-data','数据看板')"><span class="nic">📊</span><span class="nlb">数据</span></button>
+      <button class="nb" onclick="wNav(this,'pw-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- WORKER: DATA -->
+  <div class="page" id="pw-data">
+    <div class="ph"><div class="ph-t">数据看板</div><div class="ph-s">惠新南里 · 本月工作概览</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <div class="d2">
+        <div class="dbox"><div class="dnum" style="color:var(--gr)">142</div><div class="dlbl">本月工单总数</div></div>
+        <div class="dbox"><div class="dnum" style="color:var(--bl)">89%</div><div class="dlbl">入户完成率</div></div>
+        <div class="dbox"><div class="dnum" style="color:var(--am)">23</div><div class="dlbl">待处理工单</div></div>
+        <div class="dbox"><div class="dnum">47</div><div class="dlbl">活动参与人次</div></div>
+      </div>
+      <div class="slbl">工单类型分布</div>
+      <div class="bar-wrap">
+        <div class="bar-row"><span class="bar-lbl">噪音纠纷</span><div class="bar-track"><div class="bar-fill" style="width:72%;background:var(--am)"></div></div><span class="bar-val">38</span></div>
+        <div class="bar-row"><span class="bar-lbl">停车问题</span><div class="bar-track"><div class="bar-fill" style="width:55%;background:var(--bl)"></div></div><span class="bar-val">29</span></div>
+        <div class="bar-row"><span class="bar-lbl">设施损坏</span><div class="bar-track"><div class="bar-fill" style="width:40%;background:var(--gr)"></div></div><span class="bar-val">21</span></div>
+        <div class="bar-row"><span class="bar-lbl">环境卫生</span><div class="bar-track"><div class="bar-fill" style="width:28%;background:#9FE1CB"></div></div><span class="bar-val">15</span></div>
+        <div class="bar-row"><span class="bar-lbl">其他</span><div class="bar-track"><div class="bar-fill" style="width:18%;background:var(--bd2)"></div></div><span class="bar-val">9</span></div>
+      </div>
+      <div class="slbl">AI 分析</div>
+      <div class="card" id="c-analysis">
+        <div class="crow" onclick="tog('c-analysis')"><div class="ci a">🤖</div><div><div class="ct">工单深度分析</div><div class="cs">根因识别与处理建议</div></div><span class="chev" id="cv-c-analysis">›</span></div>
+        <div class="cbody" id="cb-c-analysis">
+          <button class="btn btn-g" onclick="runAI('analysis')">AI 深度分析本月工单</button>
+          <div id="r-analysis"></div>
+        </div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="wNav(this,'pw-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="wNav(this,'pw-orders','档案库')"><span class="nic">📂</span><span class="nlb">档案库</span></button>
+      <button class="nb" onclick="wNav(this,'pw-filing','工单录入')"><span class="nic">📋</span><span class="nlb">工单</span></button>
+      <button class="nb on" onclick="wNav(this,'pw-data','数据看板')"><span class="nic">📊</span><span class="nlb">数据</span></button>
+      <button class="nb" onclick="wNav(this,'pw-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- WORKER: PROFILE -->
+  <div class="page" id="pw-profile">
+    <div class="phead">
+      <div class="avt" style="background:var(--gr-l)">👔</div>
+      <div><div class="pname">张晓明</div><div class="prole">东区网格员 · 惠新南里社区</div></div>
+    </div>
+    <div class="scroll" style="padding-top:0">
+      <div class="card">
+        <div class="mi"><span class="mi-ic">📋</span><span class="mi-t">我的工单记录</span><span class="mi-a">›</span></div>
+        <div class="mi"><span class="mi-ic">📂</span><span class="mi-t">我的归档文件</span><span class="mi-a">›</span></div>
+        <div class="mi"><span class="mi-ic">🔔</span><span class="mi-t">消息通知设置</span><span class="mi-a">›</span></div>
+        <div class="mi" onclick="goLogin()"><span class="mi-ic">🚪</span><span class="mi-t" style="color:#E24B4A">退出登录</span><span class="mi-a">›</span></div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="wNav(this,'pw-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="wNav(this,'pw-orders','档案库')"><span class="nic">📂</span><span class="nlb">档案库</span></button>
+      <button class="nb" onclick="wNav(this,'pw-filing','工单录入')"><span class="nic">📋</span><span class="nlb">工单</span></button>
+      <button class="nb" onclick="wNav(this,'pw-data','数据看板')"><span class="nic">📊</span><span class="nlb">数据</span></button>
+      <button class="nb on" onclick="wNav(this,'pw-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- RESIDENT: HOME -->
+  <div class="page" id="pr-home">
+    <div class="scroll">
+      <div class="greet b">
+        <div class="greet-row">
+          <div><div class="gname">你好，李女士 👋</div><div class="gsub">惠新南里 5栋 · 东区</div></div>
+          <div class="gbadge"><div class="gbig">3</div><div class="glb">新通知</div></div>
+        </div>
+      </div>
+      <div class="slbl">快速入口</div>
+      <div class="qg">
+        <div class="qi" onclick="rGo('pr-report','反映问题')"><div class="qi-ic" style="background:var(--rd-l)">📣</div><div class="qi-lb">反映问题</div></div>
+        <div class="qi" onclick="rGo('pr-news','社区资讯')"><div class="qi-ic" style="background:var(--bl-l)">📢</div><div class="qi-lb">社区资讯</div></div>
+        <div class="qi" onclick="rGo('pr-welfare','福利政策')"><div class="qi-ic" style="background:var(--gr-l)">🎁</div><div class="qi-lb">福利政策</div></div>
+        <div class="qi" onclick="rGo('pr-profile','我的')"><div class="qi-ic" style="background:var(--am-l)">🔔</div><div class="qi-lb">我的提醒</div></div>
+      </div>
+      <div class="slbl">最新资讯</div>
+      <div class="nlist">
+        <div class="nitem"><span class="ntag g">招募</span>暑期志愿者招募中，欢迎报名<span class="newdot"></span></div>
+        <div class="nitem"><span class="ntag b">活动</span>6月社区健康体检，请提前预约</div>
+        <div class="nitem"><span class="ntag a">通知</span>7月1-3日停水，请提前储水</div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb onb" onclick="rNav(this,'pr-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb" style="color:var(--bl)">首页</span></button>
+      <button class="nb" onclick="rNav(this,'pr-report','反映问题')"><span class="nic">📣</span><span class="nlb">反映问题</span></button>
+      <button class="nb" onclick="rNav(this,'pr-news','社区资讯')"><span class="nic">📢</span><span class="nlb">资讯</span></button>
+      <button class="nb" onclick="rNav(this,'pr-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- RESIDENT: REPORT -->
+  <div class="page" id="pr-report">
+    <div class="ph"><div class="ph-t">反映问题</div><div class="ph-s">AI智能分类，转交对应网格员处理</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <div class="card" id="c-report">
+        <div class="crow" onclick="tog('c-report')"><div class="ci r">📣</div><div><div class="ct">新建问题上报</div><div class="cs">AI自动归类转办</div></div><span class="chev open" id="cv-c-report">›</span></div>
+        <div class="cbody open" id="cb-c-report">
+          <textarea id="report-in" rows="3" placeholder="请描述您的问题（如：楼道灯坏了，3号楼2单元）..."></textarea>
+          <button class="btn btn-b" onclick="runAI('report')">AI 智能上报</button>
+          <div id="r-report"></div>
+        </div>
+      </div>
+      <div class="slbl">我的历史上报</div>
+      <div class="nlist">
+        <div class="nitem"><span class="ntag a">处理中</span>电梯异响问题 · 6月8日</div>
+        <div class="nitem"><span class="ntag g">已办结</span>楼道灯损坏 · 5月21日</div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="rNav(this,'pr-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb onb" onclick="rNav(this,'pr-report','反映问题')"><span class="nic">📣</span><span class="nlb" style="color:var(--bl)">反映问题</span></button>
+      <button class="nb" onclick="rNav(this,'pr-news','社区资讯')"><span class="nic">📢</span><span class="nlb">资讯</span></button>
+      <button class="nb" onclick="rNav(this,'pr-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- RESIDENT: NEWS -->
+  <div class="page" id="pr-news">
+    <div class="ph"><div class="ph-t">社区资讯</div><div class="ph-s">活动、招募、重要通知</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <div class="news-item"><div class="news-top"><span class="ntag g">招募</span><span class="news-title">暑期志愿者招募<span class="newdot"></span></span></div><div class="news-desc">报名截止：7月1日 · 服务时间：8月1日-31日，欢迎惠新南里居民积极参与</div></div>
+      <div class="news-item"><div class="news-top"><span class="ntag b">活动</span><span class="news-title">6月健康体检</span></div><div class="news-desc">65岁以上居民免费 · 需提前预约 · 地点：社区卫生服务站</div></div>
+      <div class="news-item"><div class="news-top"><span class="ntag a">通知</span><span class="news-title">7月1-3日停水通知</span></div><div class="news-desc">因管道维修，惠新南里全区停水，请提前储水备用</div></div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="rNav(this,'pr-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="rNav(this,'pr-report','反映问题')"><span class="nic">📣</span><span class="nlb">反映问题</span></button>
+      <button class="nb onb" onclick="rNav(this,'pr-news','社区资讯')"><span class="nic">📢</span><span class="nlb" style="color:var(--bl)">资讯</span></button>
+      <button class="nb" onclick="rNav(this,'pr-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- RESIDENT: WELFARE -->
+  <div class="page" id="pr-welfare">
+    <div class="ph"><div class="ph-t">福利政策咨询</div><div class="ph-s">了解您可申请的福利</div></div>
+    <div class="scroll" style="padding-top:4px">
+      <div class="card" id="c-welfare">
+        <div class="crow" onclick="tog('c-welfare')"><div class="ci g">🎁</div><div><div class="ct">AI 政策咨询</div><div class="cs">输入问题，即时解答</div></div><span class="chev open" id="cv-c-welfare">›</span></div>
+        <div class="cbody open" id="cb-c-welfare">
+          <input type="text" id="welfare-q" placeholder="如：老年人免费体检怎么申请？"/>
+          <button class="btn btn-b" onclick="runAI('welfare')">AI 咨询</button>
+          <div id="r-welfare"></div>
+        </div>
+      </div>
+      <div class="slbl">智能提醒</div>
+      <div class="rem g">🎂 满80岁可申请高龄津贴，请联系社工办理</div>
+      <div class="rem a">📄 租约将于下月到期，请提前联系房东续签</div>
+      <div class="rem g">🏥 65岁以上居民年度免费体检，报名已开始</div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="rNav(this,'pr-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="rNav(this,'pr-report','反映问题')"><span class="nic">📣</span><span class="nlb">反映问题</span></button>
+      <button class="nb" onclick="rNav(this,'pr-news','社区资讯')"><span class="nic">📢</span><span class="nlb">资讯</span></button>
+      <button class="nb" onclick="rNav(this,'pr-profile','我的')"><span class="nic">👤</span><span class="nlb">我的</span></button>
+    </div>
+  </div>
+
+  <!-- RESIDENT: PROFILE -->
+  <div class="page" id="pr-profile">
+    <div class="phead">
+      <div class="avt" style="background:var(--bl-l)">🏠</div>
+      <div><div class="pname">李秀芳</div><div class="prole">惠新南里 5栋302 · 东区</div></div>
+    </div>
+    <div class="scroll" style="padding-top:0">
+      <div class="slbl">我的提醒</div>
+      <div class="rem g">🎂 满80岁可申请高龄津贴</div>
+      <div class="rem a">📄 租约将于下月到期</div>
+      <div class="rem g">🏥 年度免费体检报名已开始</div>
+      <div class="card" style="margin-top:12px">
+        <div class="mi"><span class="mi-ic">📣</span><span class="mi-t">我的上报记录</span><span class="mi-a">›</span></div>
+        <div class="mi"><span class="mi-ic">🔔</span><span class="mi-t">通知设置</span><span class="mi-a">›</span></div>
+        <div class="mi" onclick="goLogin()"><span class="mi-ic">🚪</span><span class="mi-t" style="color:#E24B4A">退出登录</span><span class="mi-a">›</span></div>
+      </div>
+      <div style="height:8px"></div>
+    </div>
+    <div class="nav">
+      <button class="nb" onclick="rNav(this,'pr-home','惠新南里社区')"><span class="nic">🏠</span><span class="nlb">首页</span></button>
+      <button class="nb" onclick="rNav(this,'pr-report','反映问题')"><span class="nic">📣</span><span class="nlb">反映问题</span></button>
+      <button class="nb" onclick="rNav(this,'pr-news','社区资讯')"><span class="nic">📢</span><span class="nlb">资讯</span></button>
+      <button class="nb onb" onclick="rNav(this,'pr-profile','我的')"><span class="nic">👤</span><span class="nlb" style="color:var(--bl)">我的</span></button>
+    </div>
+  </div>
+
+  <!-- FAB AREA (inside frame) -->
+  <div class="fab-area" id="fab-area" style="display:none">
+    <div class="fab-panel" id="fab-panel">
+      <div class="fab-panel-head">
+        <span class="fab-title">🤖 AI 悬浮助手</span>
+        <button class="fab-close" onclick="closeFab()">×</button>
+      </div>
+      <div class="fab-messages" id="fab-msgs">
+        <div class="fab-msg ai">你好！我是惠新南里社区AI助手，有什么可以帮你？</div>
+      </div>
+      <div class="fab-input-row">
+        <input type="text" id="fab-q" placeholder="随时提问..." onkeydown="if(event.key==='Enter')sendFab()"/>
+        <button class="fab-send g" onclick="sendFab()">↑</button>
+      </div>
+    </div>
+    <button class="fab-btn g pulse" id="fab-btn" onclick="toggleFab()">🤖</button>
+  </div>
+
+</div><!-- frame -->
+</div><!-- wrap -->
+
+<script>
+(function(){
+  const $=id=>document.getElementById(id);
+  function clock(){$('sbar-c').textContent=new Date().toTimeString().slice(0,5);}
+  clock();setInterval(clock,30000);
+
+  let role='';
+
+  function showPage(id){
+    document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+    $(id).classList.add('active');
+  }
+
+  window.goLogin=function(){
+    role='';
+    $('sbar').className='sbar login';
+    $('sbar-t').textContent='惠新南里社区';
+    $('fab-area').style.display='none';
+    $('fab-panel').classList.remove('open');
+    showPage('p-login');
+  };
+
+  window.enterWorker=function(){
+    role='worker';
+    $('sbar').className='sbar g';
+    $('sbar-t').textContent='惠新南里社区';
+    $('fab-area').style.display='flex';
+    showPage('pw-home');
+  };
+
+  window.enterResident=function(){
+    role='resident';
+    $('sbar').className='sbar b';
+    $('sbar-t').textContent='惠新南里社区';
+    $('fab-area').style.display='none';
+    showPage('pr-home');
+  };
+
+  window.wNav=function(btn,pid,label){
+    showPage(pid);
+    $('sbar-t').textContent='惠新南里社区';
+  };
+  window.rNav=function(btn,pid,label){
+    showPage(pid);
+    $('sbar-t').textContent='惠新南里社区';
+  };
+  window.wGo=function(pid){showPage(pid);};
+  window.rGo=function(pid){showPage(pid);};
+
+  window.tog=function(id){
+    const cb=$('cb-'+id),cv=$('cv-'+id);
+    const open=cb.classList.toggle('open');
+    if(cv)cv.classList.toggle('open',open);
+  };
+
+  window.pickChip=function(el,gid){
+    $(gid).querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+    el.classList.add('on');
+  };
+
+  window.toggleFab=function(){
+    const panel=$('fab-panel');
+    const isOpen=panel.classList.toggle('open');
+    $('fab-btn').classList.toggle('pulse',!isOpen);
+  };
+  window.closeFab=function(){
+    $('fab-panel').classList.remove('open');
+    $('fab-btn').classList.add('pulse');
+  };
+
+  function loading(el){el.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';el.className='';}
+
+  async function callClaude(sys,user){
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:user}]})
+    });
+    const d=await res.json();
+    return d.content?.map(b=>b.text||'').join('')||'无响应';
+  }
+
+  window.runAI=async function(type){
+    let sys,user,el;
+    if(type==='ocr'){
+      const cat=document.querySelector('#chips-ocr .chip.on')?.textContent||'通用';
+      const txt=$('ocr-in').value.trim()||'（无内容）';
+      sys='你是惠新南里社区信息管理助手。分析内容，提取关键信息（时间/地点/人员/问题），给出归档建议。用中文，简洁。';
+      user=`分类：${cat}\n内容：${txt}`;el=$('r-ocr');
+    }else if(type==='doc'){
+      const t=$('doc-type').value,topic=$('doc-topic').value.trim()||'（请填写主题）';
+      sys='你是惠新南里社区公文写作助手。起草格式规范的社区公文，含标题、正文、落款，语气正式友好。';
+      user=`请起草一份${t}，主题：${topic}`;el=$('r-doc');
+    }else if(type==='analysis'){
+      sys='你是社区工单分析师。分类统计、识别高频问题和根本原因，给出优先级处理建议。结构清晰。';
+      user='分析惠新南里本月工单：噪音纠纷38起、停车问题29起、设施损坏21起、环境卫生15起、其他9起';el=$('r-analysis');
+    }else if(type==='policy'){
+      const q=$('policy-q').value.trim()||'高龄津贴';
+      sys='你是社区政策法规助手，熟悉中国社区服务、民政福利政策。通俗易懂，给出实际操作指引，提醒核实本地政策。';
+      user=q;el=$('r-policy');
+    }else if(type==='report'){
+      const txt=$('report-in').value.trim()||'（无内容）';
+      sys='你是社区问题上报助手。对居民问题分类（设施/环境/噪音/安全等），提取位置和描述，给出分类、优先级和处理建议。';
+      user=`惠新南里居民反映：${txt}`;el=$('r-report');
+    }else if(type==='welfare'){
+      const q=$('welfare-q').value.trim()||'社区福利政策';
+      sys='你是惠新南里社区居民服务助手，提供政策咨询。用亲切友好的中文回答，语言简洁实用。';
+      user=q;el=$('r-welfare');
+    }
+    loading(el);
+    try{
+      const txt=await callClaude(sys,user);
+      el.className='ai-box';el.textContent=txt;
+    }catch(e){el.className='ai-box err';el.textContent='请求失败，请重试。';}
+  };
+
+  // FAB chat
+  window.sendFab=async function(){
+    const input=$('fab-q');
+    const q=input.value.trim();
+    if(!q)return;
+    input.value='';
+    const msgs=$('fab-msgs');
+    const uMsg=document.createElement('div');
+    uMsg.className='fab-msg user';uMsg.textContent=q;msgs.appendChild(uMsg);
+    const aMsg=document.createElement('div');
+    aMsg.className='fab-msg ai';aMsg.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';
+    msgs.appendChild(aMsg);msgs.scrollTop=msgs.scrollHeight;
+    try{
+      const txt=await callClaude('你是惠新南里社区AI悬浮球助手，为社区工作人员提供随时帮助：写作、分析、政策查询、解答问题。简洁专业，用中文。',q);
+      aMsg.innerHTML='';aMsg.textContent=txt;
+    }catch(e){aMsg.textContent='请求失败，请重试。';}
+    msgs.scrollTop=msgs.scrollHeight;
+  };
+})();
+</script>
