@@ -11,7 +11,7 @@
       --bl:#185FA5;--bl-l:#E6F1FB;--bl-d:#042C53;
       --am:#BA7517;--am-l:#FAEEDA;--am-d:#412402;
       --rd:#A32D2D;--rd-l:#FCEBEB;
-      --s: #ffffff; /* 补充默认背景色 */
+      --s: #ffffff;
       --s2: #f5f5f5;
       --bd: #e0e0e0;
       --bd2: #eeeeee;
@@ -23,21 +23,19 @@
     html, body {
       height: 100%;
       width: 100%;
-      overflow: hidden; /* 防止 iOS 橡皮筋回弹导致整个页面滚动 */
+      overflow: hidden;
     }
     body{font-family:var(--font-sans); background: var(--s);}
     
-    /* 关键修改 2：充满屏幕，支持动态视口高度 (dvh) */
     .wrap{
       width: 100%;
-      height: 100vh; /* 兼容旧浏览器 */
-      height: 100dvh; /* 适配现代移动端浏览器地址栏 */
+      height: 100vh;
+      height: 100dvh;
       margin: 0 auto;
       padding: 0;
       position: relative;
     }
     
-    /* 关键修改 3：移除模拟器的边框和圆角 */
     .frame{
       background:var(--s);
       border: none;
@@ -50,7 +48,7 @@
     }
 
     /* status bar */
-    .sbar{padding:11px 18px 9px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0; padding-top: max(11px, env(safe-area-inset-top)); /* 适配刘海屏 */}
+    .sbar{padding:11px 18px 9px;display:flex;justify-content:space-between;align-items:center;flex-shrink:0; padding-top: max(11px, env(safe-area-inset-top));}
     .sbar.g{background:var(--gr);}
     .sbar.b{background:var(--bl);}
     .sbar.login{background:var(--s2);}
@@ -62,7 +60,7 @@
     /* pages */
     .page{display:none;flex:1;flex-direction:column;overflow:hidden;min-height:0;}
     .page.active{display:flex;}
-    .scroll{flex:1;overflow-y:auto;padding:16px 16px 8px; -webkit-overflow-scrolling: touch; /* 增强 iOS 滚动流畅度 */}
+    .scroll{flex:1;overflow-y:auto;padding:16px 16px 8px; -webkit-overflow-scrolling: touch;}
     .scroll::-webkit-scrollbar{width:0;}
 
     /* login */
@@ -72,7 +70,7 @@
     .login-sub{font-size:13px;color:var(--t2);text-align:center;line-height:1.6;margin-top:-14px;}
     .role-cards{display:flex;flex-direction:column;gap:10px;width:100%;}
     .rcard{background:var(--s);border:0.5px solid var(--bd2);border-radius:14px;padding:14px 16px;cursor:pointer;display:flex;align-items:center;gap:12px;transition:all .15s;}
-    .rcard:active{background:var(--gr-l);} /* 移动端用 :active 替代 :hover 体验更好 */
+    .rcard:active{background:var(--gr-l);}
     .rci{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;}
     .rct{font-size:15px;font-weight:500;color:var(--t);}
     .rcs{font-size:12px;color:var(--t2);margin-top:2px;}
@@ -121,10 +119,10 @@
     .cbody.open{display:flex;}
 
     /* inputs */
-    textarea,input[type=text]{width:100%;padding:9px 11px;border:0.5px solid var(--bd2);border-radius:9px;font-size:13px;font-family:var(--font-sans);background:var(--s2);color:var(--t);resize:none;line-height:1.5; -webkit-appearance: none;}
+    textarea,input[type=text],input[type=password]{width:100%;padding:9px 11px;border:0.5px solid var(--bd2);border-radius:9px;font-size:13px;font-family:var(--font-sans);background:var(--s2);color:var(--t);resize:none;line-height:1.5; -webkit-appearance: none;}
     textarea:focus,input:focus{outline:none;border-color:var(--gr);}
     select{width:100%;padding:8px 11px;border:0.5px solid var(--bd2);border-radius:9px;font-size:13px;font-family:var(--font-sans);background:var(--s2);color:var(--t); -webkit-appearance: none;}
-    .btn{padding:11px 14px;border-radius:9px;font-size:14px;cursor:pointer;border:none;font-family:var(--font-sans);font-weight:500;transition:opacity .12s; -webkit-tap-highlight-color: transparent;} /* 增加按钮点击区域 */
+    .btn{padding:11px 14px;border-radius:9px;font-size:14px;cursor:pointer;border:none;font-family:var(--font-sans);font-weight:500;transition:opacity .12s; -webkit-tap-highlight-color: transparent;}
     .btn:active{opacity:.8;}
     .btn-g{background:var(--gr);color:#fff;}
     .btn-b{background:var(--bl);color:#fff;}
@@ -201,7 +199,7 @@
     .news-desc{font-size:12px;color:var(--t2);line-height:1.55;}
 
     /* bottom nav */
-    .nav{display:flex;border-top:0.5px solid var(--bd);background:var(--s);flex-shrink:0; padding-bottom: env(safe-area-inset-bottom); /* 适配全面屏底部小白条 */}
+    .nav{display:flex;border-top:0.5px solid var(--bd);background:var(--s);flex-shrink:0; padding-bottom: env(safe-area-inset-bottom);}
     .nb{flex:1;padding:9px 2px 11px;text-align:center;border:none;background:none;font-family:var(--font-sans);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;transition:opacity .12s; -webkit-tap-highlight-color: transparent;}
     .nb:active{opacity:.7;}
     .nic{font-size:21px;}
@@ -217,7 +215,7 @@
     .fab-btn:active{transform:scale(.9);}
     .fab-btn.pulse{animation:pulse 2s infinite;}
     @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(29,158,117,.35)}50%{box-shadow:0 0 0 8px rgba(29,158,117,0)}}
-    .fab-panel{background:var(--s);border:0.5px solid var(--bd2);border-radius:16px;padding:14px;width:calc(100vw - 28px);max-width:320px;display:none;flex-direction:column;gap:9px;box-shadow:0 4px 20px rgba(0,0,0,.15);} /* 适配小屏幕的面板宽度 */
+    .fab-panel{background:var(--s);border:0.5px solid var(--bd2);border-radius:16px;padding:14px;width:calc(100vw - 28px);max-width:320px;display:none;flex-direction:column;gap:9px;box-shadow:0 4px 20px rgba(0,0,0,.15);}
     .fab-panel.open{display:flex;}
     .fab-panel-head{display:flex;align-items:center;justify-content:space-between;}
     .fab-title{font-size:13px;font-weight:500;color:var(--t);}
@@ -252,6 +250,12 @@
           <div class="login-h">惠新南里社区<br>智慧服务平台</div>
           <div class="login-sub" style="margin-top:8px">请选择您的身份进入专属界面</div>
         </div>
+        
+        <div style="width:100%; margin-top:10px; padding-bottom: 10px; border-bottom: 0.5px solid var(--bd2);">
+          <input type="password" id="api-key-input" placeholder="在此填入您的 Anthropic API Key" style="text-align:center; background: #fff; margin-bottom: 6px;"/>
+          <div style="font-size:11px;color:var(--t2);text-align:center;">本地保存，不会上传到其他服务器</div>
+        </div>
+
         <div class="role-cards">
           <div class="rcard" onclick="enterWorker()">
             <div class="rci" style="background:var(--gr-l)">👔</div>
@@ -264,7 +268,6 @@
             <span style="margin-left:auto;color:var(--t2);font-size:20px">›</span>
           </div>
         </div>
-        <div style="font-size:11px;color:var(--t2)">微信授权登录 · 安全可信</div>
       </div>
     </div>
 
@@ -431,7 +434,7 @@
           <div class="mi"><span class="mi-ic">📋</span><span class="mi-t">我的工单记录</span><span class="mi-a">›</span></div>
           <div class="mi"><span class="mi-ic">📂</span><span class="mi-t">我的归档文件</span><span class="mi-a">›</span></div>
           <div class="mi"><span class="mi-ic">🔔</span><span class="mi-t">消息通知设置</span><span class="mi-a">›</span></div>
-          <div class="mi" onclick="goLogin()"><span class="mi-ic">🚪</span><span class="mi-t" style="color:#E24B4A">退出登录</span><span class="mi-a">›</span></div>
+          <div class="mi" onclick="goLogin()"><span class="mi-ic">🚪</span><span class="mi-t" style="color:#E24B4A">回到首页 / 切换账号</span><span class="mi-a">›</span></div>
         </div>
         <div style="height:8px"></div>
       </div>
@@ -555,7 +558,7 @@
         <div class="card" style="margin-top:12px">
           <div class="mi"><span class="mi-ic">📣</span><span class="mi-t">我的上报记录</span><span class="mi-a">›</span></div>
           <div class="mi"><span class="mi-ic">🔔</span><span class="mi-t">通知设置</span><span class="mi-a">›</span></div>
-          <div class="mi" onclick="goLogin()"><span class="mi-ic">🚪</span><span class="mi-t" style="color:#E24B4A">退出登录</span><span class="mi-a">›</span></div>
+          <div class="mi" onclick="goLogin()"><span class="mi-ic">🚪</span><span class="mi-t" style="color:#E24B4A">回到首页 / 切换账号</span><span class="mi-a">›</span></div>
         </div>
         <div style="height:8px"></div>
       </div>
@@ -591,6 +594,16 @@
     clock();setInterval(clock,30000);
 
     let role='';
+
+    // --- 新增：API Key 持久化逻辑 ---
+    const apiKeyInput = $('api-key-input');
+    // 初始化时，如果本地有缓存，就自动填入
+    apiKeyInput.value = localStorage.getItem('claude_api_key') || '';
+    // 监听输入框变化，实时保存到本地缓存
+    apiKeyInput.addEventListener('input', (e) => {
+      localStorage.setItem('claude_api_key', e.target.value.trim());
+    });
+    // -----------------------------
 
     function showPage(id){
       document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
@@ -656,14 +669,38 @@
 
     function loading(el){el.innerHTML='<div class="dots"><span></span><span></span><span></span></div>';el.className='';}
 
+    // --- 更新：调用最新模型并读取本地缓存的 API Key ---
     async function callClaude(sys,user){
-      const res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:800,system:sys,messages:[{role:'user',content:user}]})
+      const apiKey = localStorage.getItem('claude_api_key');
+      if (!apiKey) {
+        alert("请先在首页填写 API Key！\n\n返回【我的】->【退出登录】即可回到首页填写。");
+        throw new Error("Missing API Key");
+      }
+
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-api-key': apiKey,
+          'anthropic-version': '2023-06-01',
+          'anthropic-dangerously-allow-browser': 'true' // 允许前端直接调用
+        },
+        body: JSON.stringify({
+          model: 'claude-3-5-sonnet-20241022', // 使用较新的模型版本
+          max_tokens: 800,
+          system: sys,
+          messages: [{ role: 'user', content: user }]
+        })
       });
-      const d=await res.json();
-      return d.content?.map(b=>b.text||'').join('')||'无响应';
+      
+      if (!res.ok) {
+        const err = await res.text();
+        console.error("API Error:", err);
+        throw new Error("API 请求失败，请检查 Key 是否正确或网络是否连通");
+      }
+      
+      const d = await res.json();
+      return d.content?.map(b => b.text || '').join('') || '无响应';
     }
 
     window.runAI=async function(type){
@@ -697,7 +734,10 @@
       try{
         const txt=await callClaude(sys,user);
         el.className='ai-box';el.textContent=txt;
-      }catch(e){el.className='ai-box err';el.textContent='请求失败，请重试。';}
+      }catch(e){
+        el.className='ai-box err';
+        el.textContent= e.message || '请求失败，请检查网络或 API Key。';
+      }
     };
 
     // FAB chat
@@ -715,7 +755,10 @@
       try{
         const txt=await callClaude('你是惠新南里社区AI悬浮球助手，为社区工作人员提供随时帮助：写作、分析、政策查询、解答问题。简洁专业，用中文。',q);
         aMsg.innerHTML='';aMsg.textContent=txt;
-      }catch(e){aMsg.textContent='请求失败，请重试。';}
+      }catch(e){
+        aMsg.innerHTML='';
+        aMsg.textContent= e.message || '请求失败，请检查网络或 API Key。';
+      }
       msgs.scrollTop=msgs.scrollHeight;
     };
   })();
